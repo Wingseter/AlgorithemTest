@@ -8,8 +8,8 @@ for _ in range(K):
     board[app_x - 1][app_y - 1] = 2
 
 T = int(input())
-change_x = [0, 1, 0, -1]
 change_y = [-1, 0, 1, 0]
+change_x = [0, 1, 0, -1]
 
 
 def is_collide(y, x):
@@ -33,35 +33,41 @@ def change_dir(direction, flag):
 
 
 counter = 0
-x, y = 0, 0
+head_x, head_y = 0, 0
 tail_x, tail_y = 0, 0
 now_dir = 1
-tail_dir = 1
 tail_list = []
-board[x][y] = 1
+board[head_y][head_x] = 1
+prev_range = 0
+flag = True
+
+commend_time = list()
+commend_key = list()
+
 for _ in range(T):
-    inp_range, input_dir = input().split()
-    inp_range = int(inp_range)
-    flag = True
-    for _ in range(inp_range):
-        ny = y + change_y[now_dir]
-        nx = x + change_x[now_dir]
-        if is_collide(ny, nx):
-            flag = False
-            break
-        else:
-            tail_list.append(now_dir)
-            if board[ny][nx] != 2:
-                board[tail_y][tail_x] = 0
-                tail_dir = tail_list.pop(0)
-                tail_y += change_y[tail_dir]
-                tail_x += change_x[tail_dir]
+    input_range, input_dir = input().split()
+    commend_time.append(int(input_range))
+    commend_key.append(input_dir)
+key_in_progress = 0
 
-            board[ny][nx] = 1
-            y, x = ny, nx
-            counter += 1
-    if not flag:
+while flag:
+    ny = head_y + change_y[now_dir]
+    nx = head_x + change_x[now_dir]
+    counter += 1
+    if is_collide(ny, nx):
+        flag = False
         break
-    now_dir = change_dir(now_dir, input_dir)
+    else:
+        tail_list.append(now_dir)
+        if board[ny][nx] != 2:
+            board[tail_y][tail_x] = 0
+            tail_dir = tail_list.pop(0)
+            tail_y += change_y[tail_dir]
+            tail_x += change_x[tail_dir]
 
-print(counter + 1)
+        board[ny][nx] = 1
+        head_y, head_x = ny, nx
+    if T > key_in_progress and counter == commend_time[key_in_progress]:
+        now_dir = change_dir(now_dir, commend_key[key_in_progress])
+        key_in_progress += 1
+print(counter)
